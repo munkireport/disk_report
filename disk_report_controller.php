@@ -11,6 +11,9 @@ class Disk_report_controller extends Module_controller
     public function __construct()
     {
         $this->module_path = dirname(__FILE__);
+        
+        // Add local config
+        configAppendFile(__DIR__ . '/config.php');
     }
 
     /**

@@ -21,6 +21,9 @@ class Disk_report_model extends \Model
         $this->rs['mountpoint'] = '';
         $this->rs['volumename'] = '';
         $this->rs['encrypted'] = 0;
+        
+        // Add local config
+        configAppendFile(__DIR__ . '/config.php');
     }
     
     /**
