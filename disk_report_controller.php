@@ -106,7 +106,28 @@ class Disk_report_controller extends Module_controller
         $disk_report = new Disk_report_model;
         $obj->view('json', array('msg' => $disk_report->get_volume_type()));
     }
+    
+    /**
+     * Get global used/free
+     *
+     * @return void
+     * @author tuxudo
+     **/
+    public function get_global_used_free()
+    {
+        $obj = new View();
 
+        if (! $this->authorized()) {
+            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
+            return;
+        }
+        
+        $disk_report = new Disk_report_model;
+        $out = array();
+
+        $obj->view('json', array('msg' => $disk_report->get_global_used_free()));
+    }
+    
     /**
      * Get statistics
      *
