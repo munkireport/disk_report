@@ -1,7 +1,7 @@
 <div class="col-lg-4 col-md-6">
 	<div class="panel panel-default" id="global-disk-usage-widget">
 		<div class="panel-heading" data-container="body">
-			<h3 class="panel-title"><i class="fa fa-disk"></i>
+			<h3 class="panel-title"><i class="fa fa-hdd-o"></i>
 			    <span data-i18n="disk_report.global_disk_usage"></span>
 			    <list-link data-url="/show/listing/disk_report/disk"></list-link>
 			</h3>
