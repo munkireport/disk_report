@@ -101,6 +101,23 @@ class Disk_report_model extends \Model
     }
     
     /**
+     * Get global used/free
+     *
+     * @return array
+     * @author tuxudo
+     **/
+    public function get_global_used_free()
+    {
+        $sql = "SELECT SUM(totalsize) AS total,
+						SUM(freespace) AS free,
+						SUM(totalsize)-SUM(freespace) AS used
+						FROM diskreport
+						LEFT JOIN reportdata USING (serial_number)
+						".get_machine_group_filter();
+        return current($this->query($sql));
+    }
+    
+    /**
      * Get SMART Status statistics
      *
      *
