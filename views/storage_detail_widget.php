@@ -15,3 +15,11 @@
         </tr>
     </table>
 </div>
+
+<script>
+
+$(document).on('appReady', function(e, lang) {
+
+});
+
+</script>
