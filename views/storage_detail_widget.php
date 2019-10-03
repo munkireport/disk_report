@@ -5,7 +5,7 @@
 
 <script>
 $(document).on('appReady', function(){
-        // Get mdm_status data
+        // Get disk_report data
         $.getJSON( appUrl + '/module/disk_report/get_data/' + serialNumber, function( data ) {
                 $.each(data, function(index, item){
             $('#disk_report_detail')
@@ -36,7 +36,7 @@ $(document).on('appReady', function(){
                         .append($('<th>')
                             .text(i18n.t('disk_report.encryption_status')))
                         .append($('<td>')
-                            .text(item.encrypted.replace("0", "Not Encrypted")))
+                            .text(item.encrypted.replace("0", i18n.t('disk_report.not_encrypted'))))
                     )
                 } else if (item.encrypted == "1") {
                     $('#disk_report_detail')
@@ -44,7 +44,7 @@ $(document).on('appReady', function(){
                         .append($('<th>')
                             .text(i18n.t('disk_report.encryption_status')))
                         .append($('<td>')
-                            .text(item.encrypted.replace("1", "Encrypted")))
+                            .text(item.encrypted.replace("1", i18n.t('disk_report.encrypted'))))
                     )
                 } else {
                     $('#disk_report_detail')
