@@ -106,7 +106,7 @@ def filteredDiskInfo(deviceid):
 
     attrs = _DictFromDiskutilInfo(deviceid)
 
-    keys = ["BusProtocol", "Content", "CoreStorageCompositeDisk",
+    keys = ["APFSContainerFree", "BusProtocol", "Content", "CoreStorageCompositeDisk",
             "CoreStorageEncrypted", "CoreStorageLVGUUID", "Ejectable",
             "FilesystemName", "FreeSpace", "Internal",  "MountPoint",
             "RAIDMaster", "RAIDMemberUUID", "RAIDSetMembers", "SMARTStatus",
@@ -120,12 +120,16 @@ def filteredDiskInfo(deviceid):
         except KeyError:  # not all objects have all these attributes
             pass
 
-    # Set sizes to string with .5GB precision
+    # Set sizes to string with .5GB precision. Add filter for machines running > 10.15
+    # as these do not use the "FreeSpace" key but rather need to calculate from container.
     if out.get('TotalSize'):
-        out['TotalSize'] = str(_HalfGB(out['TotalSize']));
+        out['TotalSize'] = str(_HalfGB(out['TotalSize']))
 
-    if out.get('FreeSpace'):
-        out['FreeSpace'] = str(_HalfGB(out['FreeSpace']));
+    if _OSVersion() <= "14":
+        if out.get('FreeSpace'):
+            out['FreeSpace'] = str(_HalfGB(out['FreeSpace']))
+    else:
+        out['FreeSpace'] = str(_HalfGB(out['APFSContainerFree']))
 
     return out
 
