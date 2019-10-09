@@ -125,11 +125,10 @@ def filteredDiskInfo(deviceid):
     if out.get('TotalSize'):
         out['TotalSize'] = str(_HalfGB(out['TotalSize']))
 
-    if _OSVersion() <= "14":
-        if out.get('FreeSpace'):
-            out['FreeSpace'] = str(_HalfGB(out['FreeSpace']))
-    else:
+    if out.get('APFSContainerFree'):
         out['FreeSpace'] = str(_HalfGB(out['APFSContainerFree']))
+    else:
+        out['FreeSpace'] = str(_HalfGB(out['FreeSpace']))
 
     return out
 
