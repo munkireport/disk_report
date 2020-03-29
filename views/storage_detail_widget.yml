@@ -1,0 +1,5 @@
+type: table
+i18n_title: disk_report.storage
+table_id: disk_report_detail
+table:
+# Detail widget data comes from the storage_tab

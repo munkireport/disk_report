@@ -1,0 +1,11 @@
+type: button
+widget_id: disk-type-widget
+api_url: /module/disk_report/get_disk_type
+i18n_title: disk_report.type
+listing_link: /show/listing/disk_report/disk
+icon: fa-hdd-o
+buttons:
+    - { label: ssd, i18n_label: disk_report.ssd, search_component: ssd, hide_when_zero: true }
+    - { label: fusion, i18n_label: disk_report.fusion, search_component: fusion, hide_when_zero: true }
+    - { label: hdd, i18n_label: disk_report.hdd, search_component: hdd, hide_when_zero: true }
+    - { label: raid, i18n_label: disk_report.raid, search_component: raid, hide_when_zero: true }

@@ -1,0 +1,10 @@
+type: button
+widget_id: filesystem-type-widget
+api_url: /module/disk_report/get_volume_type
+i18n_title: disk_report.filesystem_type
+listing_link: /show/listing/disk_report/disk
+icon: fa-hdd-o
+buttons:
+    - { label: hfs, i18n_label: disk_report.ssd, search_component: hfs, hide_when_zero: true }
+    - { label: apfs, i18n_label: disk_report.fusion, search_component: apfs, hide_when_zero: true }
+    - { label: bootcamp, i18n_label: disk_report.bootcamp, search_component: bootcamp, hide_when_zero: true }

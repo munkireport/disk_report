@@ -56,17 +56,12 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_filevault_stats($mount_point = '/')
     {
-        $obj = new View();
-
-        if (! $this->authorized()) {
-            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
-            return;
+        $disk_report = new Disk_report_model;
+        $out = [];
+        foreach($disk_report->get_filevault_stats($mount_point) as $label => $value){
+            $out[] = ['label' => $label, 'count' => $value];
         }
-                $disk_report = new Disk_report_model;
-                $out = array();
-                $out['stats'] = $disk_report->get_filevault_stats($mount_point);
-
-        $obj->view('json', array('msg' => $out));
+        jsonView($out);
     }
     
      /**
@@ -77,15 +72,12 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_disk_type()
     {
-        $obj = new View();
-
-        if (! $this->authorized()) {
-            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
-            return;
-        }
-        
         $disk_report = new Disk_report_model;
-        $obj->view('json', array('msg' => $disk_report->get_disk_type()));
+        $out = [];
+        foreach($disk_report->get_disk_type() as $label => $value){
+            $out[] = ['label' => $label, 'count' => $value];
+        }
+        jsonView($out);
     }
     
      /**
@@ -96,15 +88,12 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_volume_type()
     {
-        $obj = new View();
-
-        if (! $this->authorized()) {
-            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
-            return;
-        }
-        
         $disk_report = new Disk_report_model;
-        $obj->view('json', array('msg' => $disk_report->get_volume_type()));
+        $out = [];
+        foreach($disk_report->get_volume_type() as $label => $value){
+            $out[] = ['label' => $label, 'count' => $value];
+        }
+        jsonView($out);
     }
     
     /**
@@ -163,14 +152,11 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_smart_stats()
     {
-        $obj = new View();
-
-        if (! $this->authorized()) {
-            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
-            return;
-        }
-        
         $disk_report = new Disk_report_model;
-        $obj->view('json', array('msg' =>$disk_report->getSmartStats()));
+        $out = [];
+        foreach($disk_report->getSmartStats() as $label => $value){
+            $out[] = ['label' => $label, 'count' => $value];
+        }
+        jsonView($out);
     }
 } // END class disk_report_module

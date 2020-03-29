@@ -1,0 +1,9 @@
+type: button
+widget_id: filevault-status-widget
+api_url: /module/disk_report/get_filevault_stats
+i18n_title: disk_report.filevault_widget_title
+listing_link: /show/listing/security/security
+icon: fa-lock
+buttons:
+    - { label: encrypted, class: btn-success, i18n_label: encrypted, search_component: encrypted = 1, hide_when_zero: false }
+    - { label: unencrypted, class: btn-danger, i18n_label: unencrypted, search_component: encrypted = 0, hide_when_zero: false }
