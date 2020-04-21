@@ -7,4 +7,4 @@ icon: fa-exclamation-circle
 buttons:
     - { label: failing, class: btn-danger, i18n_label: failing, search_component: failing, hide_when_zero: true }
     - { label: verified, class: btn-success, i18n_label: verified, search_component: verified, hide_when_zero: true }
-    - { label: unsupported, class: btn-info, i18n_label: unsuported, search_component: not supported, hide_when_zero: true }
+    - { label: unsupported, class: btn-info, i18n_label: unsupported, search_component: not supported, hide_when_zero: true }
