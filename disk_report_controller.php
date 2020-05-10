@@ -17,16 +17,6 @@ class Disk_report_controller extends Module_controller
     }
 
     /**
-     * Default method
-     *
-     * @author AvB
-     **/
-    public function index()
-    {
-        echo "You've loaded the disk report module!";
-    }
-
-    /**
      * Retrieve data in json format
      *
      * @return void
@@ -34,18 +24,13 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_data($serial_number = '')
     {
-        $obj = new View();
-
-        if (! $this->authorized()) {
-            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
-            return;
-        }
-        $out = array();
-        $model = new Disk_report_model;
-        foreach ($model->retrieve_records($serial_number) as $res) {
-            $out[] = $res->rs;
-        }
-        $obj->view('json', array('msg' => $out));
+        jsonView(
+            Disk_report_model::select("diskreport.*")
+                ->where("diskreport.serial_number", $serial_number)
+                ->filter()
+                ->get()
+                ->toArray()
+        );
     }
 
     /**
@@ -56,12 +41,13 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_filevault_stats($mount_point = '/')
     {
-        $disk_report = new Disk_report_model;
-        $out = [];
-        foreach($disk_report->get_filevault_stats($mount_point) as $label => $value){
-            $out[] = ['label' => $label, 'count' => $value];
-        }
-        jsonView($out);
+        jsonView(
+            Disk_report_model::selectRaw("COUNT(CASE WHEN encrypted = 1 THEN 1 END) AS encrypted")
+                ->selectRaw("COUNT(CASE WHEN encrypted = 0 THEN 1 END) AS unencrypted")
+                ->filter()
+                ->first()
+                ->toLabelCount()
+        );
     }
     
      /**
@@ -72,12 +58,15 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_disk_type()
     {
-        $disk_report = new Disk_report_model;
-        $out = [];
-        foreach($disk_report->get_disk_type() as $label => $value){
-            $out[] = ['label' => $label, 'count' => $value];
-        }
-        jsonView($out);
+        jsonView(
+            Disk_report_model::selectRaw("COUNT(CASE WHEN media_type = 'hdd' THEN 1 END) AS hdd")
+                ->selectRaw("COUNT(CASE WHEN media_type = 'ssd' THEN 1 END) AS ssd")
+                ->selectRaw("COUNT(CASE WHEN media_type = 'fusion' THEN 1 END) AS fusion")
+                ->selectRaw("COUNT(CASE WHEN media_type = 'raid' THEN 1 END) AS raid")
+                ->filter()
+                ->first()
+                ->toLabelCount()
+        );
     }
     
      /**
@@ -88,12 +77,14 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_volume_type()
     {
-        $disk_report = new Disk_report_model;
-        $out = [];
-        foreach($disk_report->get_volume_type() as $label => $value){
-            $out[] = ['label' => $label, 'count' => $value];
-        }
-        jsonView($out);
+        jsonView(
+            Disk_report_model::selectRaw("COUNT(CASE WHEN volumetype = 'APFS' THEN 1 END) AS apfs")
+                ->selectRaw("COUNT(CASE WHEN volumetype = 'bootcamp' THEN 1 END) AS bootcamp")
+                ->selectRaw("COUNT(CASE WHEN volumetype = 'Journaled HFS+' THEN 1 END) AS hfs")
+                ->filter()
+                ->first()
+                ->toLabelCount()
+        );
     }
     
     /**
@@ -104,17 +95,14 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_global_used_free()
     {
-        $obj = new View();
-
-        if (! $this->authorized()) {
-            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
-            return;
-        }
-        
-        $disk_report = new Disk_report_model;
-        $out = array();
-
-        $obj->view('json', array('msg' => $disk_report->get_global_used_free()));
+        jsonView(
+            Disk_report_model::selectRaw("SUM(totalsize) AS total")
+                ->selectRaw("SUM(freespace) AS free")
+                ->selectRaw("SUM(totalsize)-SUM(freespace) AS used")
+                ->filter()
+                ->first()
+                ->toArray()
+        );
     }
     
     /**
@@ -125,23 +113,21 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_stats($mount_point = '/')
     {
-        $obj = new View();
+        $out = [];
+        $thresholds = conf('disk_thresholds', array('danger' => 5, 'warning' => 10));
+        $out['thresholds'] = $thresholds;
+        $level1 = $thresholds['danger'] . '000000000';
+        $level2 = $thresholds['warning'] . '000000000';
+        $level2_minus_one = $level2 - 1;
 
-        if (! $this->authorized()) {
-            $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
-            return;
-        }
-                $disk_report = new Disk_report_model;
-                $out = array();
-                $thresholds = conf('disk_thresholds', array('danger' => 5, 'warning' => 10));
-                $out['thresholds'] = $thresholds;
-                $out['stats'] = $disk_report->get_stats(
-                    $mount_point,
-                    $thresholds['danger'],
-                    $thresholds['warning']
-                );
+        $out['stats'] = Disk_report_model::selectRaw("COUNT(CASE WHEN freespace > $level2_minus_one THEN 1 END) AS success")
+                            ->selectRaw("COUNT(CASE WHEN freespace < $level2 THEN 1 END) AS warning")
+                            ->selectRaw("COUNT(CASE WHEN freespace < $level1 THEN 1 END) AS danger")
+                            ->where("mountpoint", "/")
+                            ->filter()
+                            ->first();
 
-                $obj->view('json', array('msg' => $out));
+        jsonView($out);
     }
     
     /**
@@ -152,11 +138,13 @@ class Disk_report_controller extends Module_controller
      **/
     public function get_smart_stats()
     {
-        $disk_report = new Disk_report_model;
-        $out = [];
-        foreach($disk_report->getSmartStats() as $label => $value){
-            $out[] = ['label' => $label, 'count' => $value];
-        }
-        jsonView($out);
+        jsonView(
+            Disk_report_model::selectRaw("COUNT(CASE WHEN smartstatus='Failing' THEN 1 END) AS failing")
+                ->selectRaw("COUNT(CASE WHEN smartstatus='Verified' THEN 1 END) AS verified")
+                ->selectRaw("COUNT(CASE WHEN smartstatus='Not Supported' THEN 1 END) AS unsupported")
+                ->filter()
+                ->first()
+                ->toLabelCount()
+        );
     }
 } // END class disk_report_module
