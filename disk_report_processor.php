@@ -67,6 +67,8 @@ class Disk_report_processor extends Processor
             if(isset($disk['fusion']) && $disk['fusion'] == true) {
                 $disk['volumetype'] = "apfs_fusion";
             }
+            
+            $disk['encrypted'] = (int) $disk['encrypted'];
 
             $save_list[] = array_replace($fillable, array_intersect_key($disk, $fillable));
             
