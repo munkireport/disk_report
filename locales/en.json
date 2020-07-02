@@ -1,4 +1,5 @@
 {
+    "apfs": "APFS",
     "bootcamp": "BootCamp",
     "bus_protocol": "BUS Protocol",
     "encrypted": "Encrypted",
@@ -8,6 +9,7 @@
     "fusion": "Fusion",
     "global_disk_usage": "Global Disk Usage",
     "hdd": "HDD",
+    "hfs": "HFS+",
     "internal": "Internal",
     "media_type": "Media Type",
     "mountpoint": "Mount Point",
