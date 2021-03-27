@@ -37,19 +37,6 @@ def _OSVersion():
 
     return output.split('.')[1]
 
-def _GetAPFSDeviceInfoDict():
-    """get list of deviceIDs with extra info"""
-    deviceIdDict = {}
-    apfslist = _DictFromDiskutilAPFSList()
-    for container in apfslist['Containers']:
-        fusion = container.get('Fusion')
-        for volume in container['Volumes']:
-            deviceID = volume['DeviceIdentifier']
-            encrypted = volume.get('Encryption')
-            deviceIdDict[deviceID] = {'fusion': fusion,
-                'encrypted': encrypted}
-    return deviceIdDict
-
 def _DictFromDiskutilAPFSList():
     """calls diskutil apfs list.
         info: dictionary from resulting plist output
@@ -110,7 +97,7 @@ def filteredDiskInfo(deviceid):
             "CoreStorageEncrypted", "CoreStorageLVGUUID", "Ejectable",
             "FilesystemName", "FreeSpace", "Internal",  "MountPoint",
             "RAIDMaster", "RAIDMemberUUID", "RAIDSetMembers", "SMARTStatus",
-            "SolidState", "TotalSize", "VolumeName"]
+            "SolidState", "TotalSize", "VolumeName", "FileVault"]
 
     out = {}
     for key in keys:
@@ -177,27 +164,30 @@ def _isDiskImage(diskInfo):
         return True
     return False
 
+def add_apfs_info(volumeList, disk):
+    if not getattr(disk, 'APFSVolumes', None):
+        return
+    skipTheseMountpoints = ['/System/Volumes/Preboot','/System/Volumes/VM',
+        '/System/Volumes/Update', '/private/var/vm']
+    for apfsvolume in disk.APFSVolumes:
+        mountpoint = apfsvolume.get('MountPoint')
+        if mountpoint and mountpoint not in skipTheseMountpoints:
+            deviceId = apfsvolume['DeviceIdentifier']
+            diskInfo = filteredDiskInfo(deviceId)
+            if _isDiskImage(diskInfo):
+                # Skip Disk Images
+                continue
+            diskInfo['encrypted'] = diskInfo.get('FileVault', False)
+            volumeList.append(diskInfo)
+
 def DiskReport():
     """ Retrieve a list of dicts containing disk info """
     volumeList = []
     coreStorageDict = {}
     appleRaidDict = {}
     searchCS = False
-
     for disk in AllDisksAndPartitions():
-        if getattr(disk, 'APFSVolumes', None):
-            apfsInfoList = _GetAPFSDeviceInfoDict()
-            for apfsvolume in disk.APFSVolumes:
-                mountpoint = apfsvolume.get('MountPoint')
-                if mountpoint and mountpoint != '/private/var/vm':
-                    deviceId = apfsvolume['DeviceIdentifier']
-                    diskInfo = filteredDiskInfo(deviceId)
-                    if _isDiskImage(diskInfo):
-                        # Skip Disk Images
-                        continue
-                    if apfsInfoList.get(deviceId):
-                        diskInfo.update(apfsInfoList[deviceId])
-                    volumeList.append(diskInfo)
+        add_apfs_info(volumeList, disk)
         if getattr(disk, 'Partitions', None):
             for partition in disk.Partitions:
 
