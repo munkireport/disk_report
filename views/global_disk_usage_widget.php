@@ -1,12 +1,12 @@
 <div class="col-lg-4 col-md-6">
-	<div class="panel panel-default" id="global-disk-usage-widget">
-		<div class="panel-heading" data-container="body">
-			<h3 class="panel-title"><i class="fa fa-hdd-o"></i>
+	<div class="card" id="global-disk-usage-widget">
+		<div class="card-header" data-container="body">
+			<i class="fa fa-hdd-o"></i>
 			    <span data-i18n="disk_report.global_disk_usage"></span>
-			    <list-link data-url="/show/listing/disk_report/disk"></list-link>
-			</h3>
+			    <a href="/show/listing/disk_report/disk" class="pull-right"><i class="fa fa-list"></i></a>
+			
 		</div>
-		<div class="panel-body text-center"></div>
+		<div class="card-body text-center"></div>
 	</div><!-- /panel -->
 </div><!-- /col -->
 
@@ -20,7 +20,7 @@ $(document).on('appUpdate', function(e, lang) {
     		return;
     	}
 
-		var panel = $('#global-disk-usage-widget div.panel-body'),
+		var panel = $('#global-disk-usage-widget div.card-body'),
 		baseUrl = appUrl + '/show/listing/disk_report/disk';
 		panel.empty();
 

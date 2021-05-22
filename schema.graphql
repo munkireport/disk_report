@@ -1,0 +1,19 @@
+type Disk_report_model {
+    id: ID!
+    serial_number: String!
+    totalsize: Int
+    freespace: Int
+    percentage: Int
+    smartstatus: String
+    volumetype: String
+    media_type: String
+    busprotocol: String
+    internal: Int
+    mountpoint: String
+    volumename: String
+    encrypted: Int
+}
+
+extend type Query @guard {
+    diskReports: [Disk_report_model!]! @paginate(defaultCount: 20)
+}
