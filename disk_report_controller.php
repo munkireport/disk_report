@@ -39,11 +39,11 @@ class Disk_report_controller extends Module_controller
      * @return void
      * @author
      **/
-    public function get_filevault_stats($mount_point = '/')
+    public function get_filevault_stats($mount_point = '/System/Volumes/Data')
     {
         jsonView(
-            Disk_report_model::selectRaw("COUNT(CASE WHEN encrypted = 1 AND mountpoint = '/' THEN 1 END) AS encrypted")
-                ->selectRaw("COUNT(CASE WHEN encrypted = 0 AND mountpoint = '/' THEN 1 END) AS unencrypted")
+            Disk_report_model::selectRaw("COUNT(CASE WHEN encrypted = 1 AND mountpoint = '/System/Volumes/Data' THEN 1 END) AS encrypted")
+                ->selectRaw("COUNT(CASE WHEN encrypted = 0 AND mountpoint = '/System/Volumes/Data' THEN 1 END) AS unencrypted")
                 ->filter()
                 ->first()
                 ->toLabelCount()
