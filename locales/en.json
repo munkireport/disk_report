@@ -28,6 +28,5 @@
     "used": "Used",
     "used_disk_space": "Used Disk Space",
     "volume_type": "Volume Type",
-    "report": "Storage Report",
-    "filevault_widget_title": "FileVault 2 Status"
+    "report": "Storage Report"
 }
