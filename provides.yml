@@ -6,7 +6,6 @@ listings:
     disk: { view: disk_listing, i18n: disk_report.storage }
 widgets:
     disk_report: { view: disk_report_widget }
-    filevault: { view: filevault_widget }
     smart_status: { view: smart_status_widget }
     disk_type: { view: disk_type_widget }
     filesystem_type: { view: filesystem_type_widget }

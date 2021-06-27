@@ -1,7 +1,7 @@
 row1:
     disk_report:
     disk_type:
-    filevault:
+    filevault_status:
 row2:
     smart_status:
     filesystem_type:

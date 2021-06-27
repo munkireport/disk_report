@@ -22,6 +22,5 @@
     "type": "Type de stockage",
     "used": "Utilisé",
     "volume_type": "Type de Volume",
-    "report": "Stockage",
-    "filevault_widget_title": "État Filevault 2"
+    "report": "Stockage"
 }
